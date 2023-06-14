@@ -8,3 +8,16 @@
 /var/
 /vendor/
 ###< symfony/framework-bundle ###
+/.env
+/.idea/.gitignore
+/.idea/.name
+/composer.lock
+/.idea/deployment.xml
+/.idea/commandlinetools/schemas/frameworkDescriptionVersion1.1.4.xsd
+/.idea/i18nally.json
+/.idea/modules.xml
+/.idea/php.xml
+/.idea/phpunit.xml
+/symfony.lock
+/.idea/commandlinetools/Symfony_14_06_23__18_15.xml
+/.idea/Talk to me Backend.iml
