@@ -38,3 +38,4 @@
 /.idea/discord.xml
 /.idea/dataSources.xml
 /.idea/sqldialects.xml
+/public/credentials/firebase_credentials.json
