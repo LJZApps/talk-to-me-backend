@@ -1,8 +1,5 @@
 
 ###> symfony/framework-bundle ###
-/.env.local
-/.env.local.php
-/.env.*.local
 /config/secrets/prod/prod.decrypt.private.php
 /public/bundles/
 /var/
@@ -14,28 +11,16 @@
 .phpunit.result.cache
 ###< phpunit/phpunit ###
 
-###> symfony/phpunit-bridge ###
-.phpunit.result.cache
-/phpunit.xml
-###< symfony/phpunit-bridge ###
-/.env
-/.env.test
-/.idea/.name
-/.idea/codeception.xml
 /composer.lock
-/.idea/deployment.xml
-/.idea/commandlinetools/schemas/frameworkDescriptionVersion1.1.4.xsd
-/.idea/i18nally.json
-/.idea/modules.xml
-/.idea/php.xml
-/.idea/phpspec.xml
-/.idea/phpunit.xml
 /phpunit.xml.dist
 /symfony.lock
-/.idea/commandlinetools/Symfony_14_06_23__18_15.xml
-/.idea/Talk to me Backend.iml
-/.idea/vcs.xml
-/.idea/discord.xml
-/.idea/dataSources.xml
-/.idea/sqldialects.xml
+/.idea/*
 /public/credentials/firebase_credentials.json
+/.env
+/.env.test
+###> symfony/webpack-encore-bundle ###
+/node_modules/
+/public/build/
+npm-debug.log
+yarn-error.log
+###< symfony/webpack-encore-bundle ###

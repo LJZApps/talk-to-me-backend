@@ -3,5 +3,5 @@
         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
         xsi:schemaLocation="http://symfony.com/schema/routing
         https://symfony.com/schema/routing/routing-1.0.xsd">
-    <route id="api_v1_create_user" path="/user" methods="PUT" controller="App\Controller\ApiUserController::createUser" />
+    <route id="main_home" path="/" controller="App\Controller\HomeController::index" />
 </routes>
