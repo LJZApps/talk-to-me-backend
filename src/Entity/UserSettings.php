@@ -3,9 +3,7 @@
 namespace App\Entity;
 
 use App\Repository\UserSettingsRepository;
-use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
-use phpDocumentor\Reflection\DocBlock\Tags\Factory\StaticMethod;
 
 #[ORM\Entity(repositoryClass: UserSettingsRepository::class)]
 class UserSettings
@@ -13,9 +11,6 @@ class UserSettings
     #[ORM\Id]
     #[ORM\Column(length: 40)]
     private ?string $uid = null;
-
-    #[ORM\Column]
-    private array $roles = ["ROLE_USER", "ROLE_ADMIN", "ROLE_MODERATOR", "ROLE_DEVELOPER", "ROLE_COMPANY", "ROLE_CREATOR"];
 
     #[ORM\Column]
     private ?bool $mark_messages_as_read = true;
@@ -103,18 +98,6 @@ class UserSettings
     public function setLastOnlineVisibility(int $last_online_visibility): static
     {
         $this->last_online_visibility = $last_online_visibility;
-
-        return $this;
-    }
-
-    public function getRoles(): array
-    {
-        return $this->roles;
-    }
-
-    public function setRoles(array $roles): static
-    {
-        $this->roles = $roles;
 
         return $this;
     }
