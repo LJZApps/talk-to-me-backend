@@ -23,7 +23,6 @@ class ApiUserController extends AbstractController
     public function getUserData(mixed $uid, Request $request): JsonResponse
     {
         return $this->userDataService->getUserData($uid);
-
     }
 
     public function createUser(Request $request): JsonResponse

@@ -89,7 +89,7 @@ class UserDataService
             return new JsonResponse([
                 'success' => true,
                 'user_uid' => $createdUser->uid,
-                'sign_in_data' => $signInResult->asTokenResponse()
+                'refresh_token' => $signInResult->refreshToken()
             ]);
         } catch (\Exception|\Throwable $m) {
             return $this->responseUtil->errorResponse(
