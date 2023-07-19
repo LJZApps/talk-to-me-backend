@@ -2,7 +2,48 @@
 {% set title = "Talk to me" %}
 
 {% block body %}
-    <div class="d-grid gap-2">
-        <button type="button" class="btn btn-danger-soft m-5">Eintrag löschen</button>
-    </div>
+    <main class="container d-flex flex-column">
+        <div class="row align-items-center justify-content-center g-0
+        min-vh-100">
+            <div class="col-12 col-md-8 col-lg-6 col-xxl-4 py-8 py-xl-0">
+                <a href="#" class="form-check form-switch theme-switch btn btn-light btn-icon rounded-circle d-none ">
+                    <input class="form-check-input" type="checkbox" role="switch" id="flexSwitchCheckDefault">
+                    <label class="form-check-label" for="flexSwitchCheckDefault"></label>
+                </a>
+                <!-- Card -->
+                <div class="card smooth-shadow-md">
+                    <!-- Card body -->
+                    <div class="card-body p-6">
+                        <div class="mb-4 img-fluid text-center">
+                            <a href="{{ path('main_home') }}"><img src="project-images/login/icon-192-maskable.png" class="mb-2 text-inverse" alt="Image"></a>
+                            <p class="mb-6 text-start">Please log in to use the backend.</p>
+                        </div>
+                        <!-- Form -->
+                        <form>
+                            <!-- begin::username -->
+                            <div class="mb-3">
+                                <label for="email" class="form-label">E-Mail</label>
+                                <input type="email" id="email" class="form-control" name="email" placeholder="email@address.com" required="">
+                            </div>
+                            <!-- end::username -->
+                            <!-- begin:password -->
+                            <div class="mb-3">
+                                <label for="password" class="form-label">Password</label>
+                                <input type="password" id="password" class="form-control" name="password" placeholder="Password" required="">
+                            </div>
+                            <!-- end::password -->
+                            <div>
+                                <!-- Button -->
+                                <div class="d-grid">
+                                    <button type="submit" class="btn btn-primary">
+                                        Login
+                                    </button>
+                                </div>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
 {% endblock %}
