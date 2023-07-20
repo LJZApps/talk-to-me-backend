@@ -3,6 +3,9 @@
         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
         xsi:schemaLocation="http://symfony.com/schema/routing
         https://symfony.com/schema/routing/routing-1.0.xsd">
+
     <route id="api_v1_create_user" path="/user" methods="PUT" controller="App\Controller\API\ApiUserController::createUser" />
     <route id="api_v1_get_user" path="/user/{uid}" methods="GET" controller="App\Controller\API\ApiUserController::getUserData" />
+
+    <route id="api_v1_create_report" path="/report" methods="PUT" controller="App\Controller\API\ApiReportController::createReport" />
 </routes>
