@@ -39,6 +39,16 @@ class UserStatusPolicyRepository extends ServiceEntityRepository
         }
     }
 
+    public function getPolicyById(int $id): UserStatusPolicy
+    {
+        return $this->createQueryBuilder('p')
+            ->select('p')
+            ->where('p.id = :p_id')
+            ->setParameter('p_id', $id)
+            ->getQuery()
+            ->getSingleScalarResult();
+    }
+
 //    /**
 //     * @return UserStatusPolicy[] Returns an array of UserStatusPolicy objects
 //     */
