@@ -20,4 +20,17 @@ class UserController extends AbstractController
     {
         return $this->api->createUser($request);
     }
+
+    public function API_CheckForUsername(Request $request): JsonResponse
+    {
+        return $this->api->checkForUsername($request);
+    }
+
+    // TODO
+    public function API_GetUser(Request $request): JsonResponse
+    {
+        return $this->json([
+           "success" => true
+        ]);
+    }
 }

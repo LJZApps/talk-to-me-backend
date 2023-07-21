@@ -16,6 +16,7 @@
 docker-compose.yml
 docker-compose.override.yml
 /migrations
+/migrations/*
 /composer.lock
 /phpunit.xml.dist
 /symfony.lock

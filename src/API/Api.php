@@ -4,30 +4,31 @@ namespace App\API;
 
 use App\Entity\Notification;
 use DateTime;
-use Doctrine\ORM\EntityManager;
 use Doctrine\ORM\EntityManagerInterface;
+use Kreait\Firebase\Contract\Auth;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\DependencyInjection\ParameterBag\ParameterBagInterface;
 use Symfony\Component\HttpFoundation\JsonResponse;
 
 class Api extends AbstractController
 {
-
-    /**
-     *
-     * @var EntityManager
-     */
     protected $orm;
     protected $db;
 
     protected $parameters;
 
-    public function __construct(EntityManagerInterface $em, ParameterBagInterface $param)
+    // Firebase
+    protected Auth $auth;
+
+    public function __construct(EntityManagerInterface $em, ParameterBagInterface $param, Auth $firebaseAuth)
     {
         $this->orm = $em;
         $this->db = $em->getConnection();
 
         $this->parameters = $param;
+
+        // Firebase
+        $this->auth = $firebaseAuth;
     }
 
     protected function compareDates($timeA, $timeB, $format)
@@ -42,23 +43,39 @@ class Api extends AbstractController
         return substr(str_shuffle(str_repeat($x = '0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ', ceil($length / strlen($x)))), 1, $length);
     }
 
-    public function errorResponse(string $error_code, string $error_message)
+    public function errorResponse(string $error_code, string $error_message, string $exception_message = null): JsonResponse
     {
-        $json = array(
+        if (!is_null($exception_message)) {
+            return $this->json([
+                "success" => false,
+                "error_code" => $error_code,
+                "error_message" => $error_message,
+                "exception_message" => $exception_message
+            ], 400);
+        }
+
+        return $this->json([
             "success" => false,
             "error_code" => $error_code,
             "error_message" => $error_message
-        );
-        return $this->json($json, 400);
+        ], 400);
     }
 
-    public function internalErrorResponse(): JsonResponse
+    public function internalErrorResponse(string $exception_message = null): JsonResponse
     {
+        if (!is_null($exception_message)) {
+            return $this->json([
+                "success" => false,
+                "error_code" => "internal_error",
+                "error_message" => "Something went wrong on our end.",
+                "exception_message" => $exception_message
+            ], 500);
+        }
+
         return $this->json([
             "success" => false,
             "error_code" => "internal_error",
             "error_message" => "Something went wrong on our end."
         ], 500);
     }
-
 }

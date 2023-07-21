@@ -27,10 +27,26 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     private ?string $password = null;
 
     #[ORM\ManyToOne(inversedBy: 'user')]
-    #[ORM\JoinColumn(nullable: false)]
+    #[ORM\JoinColumn(nullable: true)]
     private ?UserSetting $userSetting = null;
 
-    public function getUid(): ?int
+    #[ORM\Column(length: 255, unique: true)]
+    private ?string $username = null;
+
+    #[ORM\Column(length: 200, nullable: true)]
+    private ?string $biography = null;
+
+    #[ORM\Column(length: 255)]
+    private ?string $display_name = null;
+
+    public function setUid(string $uid): static
+    {
+        $this->uid = $uid;
+
+        return $this;
+    }
+
+    public function getUid(): ?string
     {
         return $this->uid;
     }
@@ -108,6 +124,42 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     public function setUserSetting(?UserSetting $userSetting): static
     {
         $this->userSetting = $userSetting;
+
+        return $this;
+    }
+
+    public function getUsername(): ?string
+    {
+        return $this->username;
+    }
+
+    public function setUsername(string $username): static
+    {
+        $this->username = $username;
+
+        return $this;
+    }
+
+    public function getBiography(): ?string
+    {
+        return $this->biography;
+    }
+
+    public function setBiography(?string $biography): static
+    {
+        $this->biography = $biography;
+
+        return $this;
+    }
+
+    public function getDisplayName(): ?string
+    {
+        return $this->display_name;
+    }
+
+    public function setDisplayName(string $display_name): static
+    {
+        $this->display_name = $display_name;
 
         return $this;
     }
