@@ -16,7 +16,8 @@ class TokenCredentials implements CredentialsInterface
     public function getToken(): string
     {
         if (is_null($this->token)) {
-            throw new \LogicException("Deine mam hat nen Fehler verursacht.");
+            // TODO
+            throw new \LogicException("TOKEN ERROR HERE");
         }
 
         return $this->token;

@@ -61,7 +61,7 @@ class ApiAuthenticator extends AbstractAuthenticator
                 }
             } catch (JWTDecodeFailureException $e) {
                 throw new AuthenticationException(
-                    message: 'Invalid token 17000!'
+                    message: 'Invalid token!'
                 );
             }
         }
@@ -78,8 +78,9 @@ class ApiAuthenticator extends AbstractAuthenticator
     {
         return new JsonResponse([
             "success" => false,
-            "message" => "This shit is pure shit."
+            "message" => "token valid"
         ]);
+        // return null;
     }
 
     /**
