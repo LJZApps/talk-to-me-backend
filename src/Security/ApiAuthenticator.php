@@ -52,7 +52,7 @@ class ApiAuthenticator extends AbstractAuthenticator
                                 return $this->userRepository->findByID((int) $userIdentifier);
                             }
                         ),
-                        credentials: new PasswordCredentials("")
+                        credentials: new PasswordCredentials($token)
                     );
                 } else {
                     throw new AuthenticationException(
