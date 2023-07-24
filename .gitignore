@@ -15,7 +15,7 @@
 /docker-compose.override.yml
 docker-compose.yml
 docker-compose.override.yml
-/migrations
+/migrations*
 /migrations/*
 /composer.lock
 /phpunit.xml.dist
@@ -30,3 +30,7 @@ docker-compose.override.yml
 npm-debug.log
 yarn-error.log
 ###< symfony/webpack-encore-bundle ###
+
+###> lexik/jwt-authentication-bundle ###
+/config/jwt/*.pem
+###< lexik/jwt-authentication-bundle ###

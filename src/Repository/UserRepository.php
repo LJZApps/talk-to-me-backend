@@ -4,6 +4,7 @@ namespace App\Repository;
 
 use App\Entity\User;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
+use Doctrine\ORM\NonUniqueResultException;
 use Doctrine\Persistence\ManagerRegistry;
 use Symfony\Component\Security\Core\Exception\UnsupportedUserException;
 use Symfony\Component\Security\Core\User\PasswordAuthenticatedUserInterface;
@@ -56,6 +57,21 @@ class UserRepository extends ServiceEntityRepository implements PasswordUpgrader
         $this->save($user, true);
     }
 
+    public function findByID(int $id): ?User
+    {
+        try {
+            $qb = $this->createQueryBuilder("u");
+            return $qb->select("u")
+                ->where("u.id = :id")
+                ->setParameter("id", $id)
+                ->setMaxResults(1)
+                ->getQuery()
+                ->getOneOrNullResult();
+        } catch (NonUniqueResultException) {
+            return null;
+        }
+    }
+
     public function findByUsername(string $username): array
     {
         $qb = $this->createQueryBuilder("u");
@@ -65,6 +81,21 @@ class UserRepository extends ServiceEntityRepository implements PasswordUpgrader
             ->setMaxResults(1)
             ->getQuery()
             ->getArrayResult();
+    }
+
+    public function findUserByEmail(string $mail): ?User
+    {
+        try {
+            return $this->createQueryBuilder('u')
+                ->select('u')
+                ->where('u.email = :email')
+                ->setMaxResults(1)
+                ->setParameter('email', $mail)
+                ->getQuery()
+                ->getOneOrNullResult();
+        } catch (\Exception $e) {
+            return null;
+        }
     }
 
 //    /**

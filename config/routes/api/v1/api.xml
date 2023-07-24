@@ -7,4 +7,5 @@
     <route id="api_v1_create_user" path="/user/create" methods="PUT" controller="App\Controller\UserController::API_CreateUser" />
     <route id="api_v1_check_username" path="/username-check" methods="GET" controller="App\Controller\UserController::API_CheckForUsername" />
     <route id="api_v1_get_user" path="/user/{username}" methods="GET" controller="App\Controller\UserController::API_GetUser" />
+    <route id="api_v1_login" path="/login" methods="POST" controller="App\Controller\UserController::API_Login" />
 </routes>

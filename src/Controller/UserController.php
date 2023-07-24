@@ -16,6 +16,11 @@ class UserController extends AbstractController
         $this->api = $api;
     }
 
+    public function API_Login(Request $request)
+    {
+        return $this->api->login($request);
+    }
+
     public function API_CreateUser(Request $request): JsonResponse
     {
         return $this->api->createUser($request);

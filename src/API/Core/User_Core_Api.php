@@ -11,28 +11,102 @@ use Kreait\Firebase\Auth\SendActionLink\FailedToSendActionLink;
 use Kreait\Firebase\Contract\Auth;
 use Kreait\Firebase\Exception\AuthException;
 use Kreait\Firebase\Exception\FirebaseException;
+use Lexik\Bundle\JWTAuthenticationBundle\Exception\JWTDecodeFailureException;
+use Lexik\Bundle\JWTAuthenticationBundle\Services\JWTTokenManagerInterface;
 use Symfony\Component\DependencyInjection\ParameterBag\ParameterBagInterface;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface;
+use Symfony\Component\Security\Core\Exception\AuthenticationException;
 use Throwable;
 
 class User_Core_Api extends Api
 {
     private UserFactory $userFactory;
     private UserRepository $userRepository;
+    private JWTTokenManagerInterface $tokenManager;
+    private UserPasswordHasherInterface $passwordHasher;
 
     public function __construct(
-        EntityManagerInterface $em,
-        ParameterBagInterface  $param,
-        Auth                   $auth,
-        UserFactory            $userFactory,
-        UserRepository         $userRepository
+        EntityManagerInterface   $em,
+        ParameterBagInterface    $param,
+        Auth                     $auth,
+        UserFactory              $userFactory,
+        UserRepository           $userRepository,
+        JWTTokenManagerInterface $tokenManager,
+        UserPasswordHasherInterface $passwordHasher,
     )
     {
         parent::__construct($em, $param, $auth);
 
         $this->userFactory = $userFactory;
         $this->userRepository = $userRepository;
+        $this->tokenManager = $tokenManager;
+        $this->passwordHasher = $passwordHasher;
+    }
+
+    public function login(Request $request): JsonResponse
+    {
+        try {
+            $email = $request->query->get("email");
+            $password = $request->query->get("password");
+
+            if (is_null($email)) {
+                return $this->errorResponse("key_email_missing", "Please provide an email.");
+            }
+
+            if (is_null($password)) {
+                return $this->errorResponse("key_password_missing", "Please provide a password.");
+            }
+
+            $user = $this->userRepository->findUserByEmail($email);
+
+            if (is_null($user)) {
+                return $this->errorResponse(
+                    "account_not_found",
+                    "There is no account with this email address."
+                );
+            }
+
+            if (!$this->passwordHasher->isPasswordValid($user, trim($password))) {
+                return $this->errorResponse(
+                    "incorrect_password",
+                    "The provided password is invalid"
+                );
+            }
+
+            $token = $this->tokenManager->createFromPayload(
+                user: $user,
+                payload: array("user_id" => $user->getId())
+            );
+
+            try {
+                $tokenData = $this->tokenManager->parse($token);
+                $expirationTime = 0;
+
+                if (array_key_exists('exp', $tokenData)) {
+                    $expirationTime = $tokenData['exp'];
+                }
+                /*
+                 * data: [
+                        'token' => $token,
+                        'expiration_time' => $expirationTime
+                    ],
+                 */
+
+                return $this->successResponse([
+                    "token" => $token,
+                    "token_exp" => $expirationTime,
+                    "token_data" => $tokenData
+                ]);
+            } catch (JWTDecodeFailureException $e) {
+                throw new AuthenticationException(
+                    message: 'Token expired!'
+                );
+            }
+        } catch (Exception|Throwable $error) {
+            return $this->internalErrorResponse();
+        }
     }
 
     public function createUser(Request $request): JsonResponse
@@ -88,9 +162,7 @@ class User_Core_Api extends Api
             $this->orm->persist($user);
             $this->orm->flush();
 
-            return $this->json([
-                "success" => true,
-            ]);
+            return $this->successResponse();
         } catch (Exception|Throwable $e) {
             return $this->internalErrorResponse($e->getMessage());
         }
@@ -100,9 +172,7 @@ class User_Core_Api extends Api
     public function checkForEmail(Request $request): JsonResponse
     {
         try {
-            return $this->json([
-                "success" => true
-            ]);
+            return $this->successResponse();
         } catch (Exception|Throwable $e) {
             return $this->internalErrorResponse();
         }
@@ -127,17 +197,13 @@ class User_Core_Api extends Api
             }
 
             if ($this->userRepository->findByUsername($username) != null) {
-                return $this->json([
-                    "success" => true,
-                    "available" => false,
-                    "reason" => "username_taken"
-                ]);
+                return $this->errorResponse(
+                    "username_taken",
+                    "This username is already taken."
+                );
             }
 
-            return $this->json([
-                "success" => true,
-                "available" => true
-            ]);
+            return $this->successResponse();
         } catch (Exception|Throwable $e) {
             return $this->internalErrorResponse(
                 exception_message: $e->getMessage()

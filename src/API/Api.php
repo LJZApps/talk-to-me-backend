@@ -43,6 +43,20 @@ class Api extends AbstractController
         return substr(str_shuffle(str_repeat($x = '0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ', ceil($length / strlen($x)))), 1, $length);
     }
 
+    public function successResponse(array $data = null): JsonResponse
+    {
+        if (!is_null($data)) {
+            return $this->json([
+                "success" => true,
+                "data" => $data
+            ]);
+        }
+
+        return $this->json([
+            "success" => true
+        ]);
+    }
+
     public function errorResponse(string $error_code, string $error_message, string $exception_message = null): JsonResponse
     {
         if (!is_null($exception_message)) {
