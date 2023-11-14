@@ -31,6 +31,11 @@ class UserController extends AbstractController
         return $this->api->checkForUsername($request);
     }
 
+    public function API_TokenTest(Request $request): JsonResponse
+    {
+        return $this->api->tokenTest($request);
+    }
+
     // TODO
     public function API_GetUser(Request $request): JsonResponse
     {

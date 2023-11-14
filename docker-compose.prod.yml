@@ -1,0 +1,16 @@
+version: '3'
+
+services:
+  api:
+    labels:
+      - traefik.enable=true
+      - traefik.docker.network=t2_proxy
+      - traefik.http.middlewares.auth${COMPOSE_PROJECT_NAME}_api.basicauth.users=babelli:$$2b$$09$$Vvvh.H9JBx7RkXgo.n5MLOXJcoLqnj6XVj9I0x2GDHYXvG3UZTW12
+      - traefik.http.routers.${COMPOSE_PROJECT_NAME}_api.rule=Host(`${HOST}`) && !Method(`OPTIONS`)
+      - traefik.http.routers.${COMPOSE_PROJECT_NAME}_api.entrypoints=https
+      - traefik.http.routers.${COMPOSE_PROJECT_NAME}_api.tls.certresolver=leresolver
+      - traefik.http.routers.${COMPOSE_PROJECT_NAME}_api.middlewares=auth${COMPOSE_PROJECT_NAME}_api
+      - traefik.http.routers.${COMPOSE_PROJECT_NAME}_api2.rule=Host(`${HOST}`) && Method(`OPTIONS`)
+      - traefik.http.routers.${COMPOSE_PROJECT_NAME}_api2.entrypoints=https
+      - traefik.http.routers.${COMPOSE_PROJECT_NAME}_api2.tls.certresolver=leresolver
+

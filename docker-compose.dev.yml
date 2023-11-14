@@ -1,0 +1,16 @@
+---
+version: '3'
+
+services:
+  api:
+    labels:
+      - traefik.enable=true
+      - traefik.http.routers.${COMPOSE_PROJECT_NAME}_api.rule=Host(`${HOST}`)
+      - traefik.http.routers.${COMPOSE_PROJECT_NAME}_api.entrypoints=https
+      - traefik.http.routers.${COMPOSE_PROJECT_NAME}_api.tls=true
+      # - traefik.http.routers.${COMPOSE_PROJECT_NAME}_api.middlewares=cors${COMPOSE_PROJECT_NAME}_api
+      # - traefik.http.middlewares.cors${COMPOSE_PROJECT_NAME}_api.headers.accesscontrolallowmethods=GET,OPTIONS,PUT
+      # - traefik.http.middlewares.cors${COMPOSE_PROJECT_NAME}_api.headers.accessControlAllowHeaders=*
+      # - traefik.http.middlewares.cors${COMPOSE_PROJECT_NAME}_api.headers.accesscontrolalloworiginlist=*
+      # - traefik.http.middlewares.cors${COMPOSE_PROJECT_NAME}_api.headers.accesscontrolmaxage=100
+      # - traefik.http.middlewares.cors${COMPOSE_PROJECT_NAME}_api.headers.addvaryheader=false

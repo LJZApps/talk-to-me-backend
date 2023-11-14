@@ -11,6 +11,7 @@ use Kreait\Firebase\Auth\SendActionLink\FailedToSendActionLink;
 use Kreait\Firebase\Contract\Auth;
 use Kreait\Firebase\Exception\AuthException;
 use Kreait\Firebase\Exception\FirebaseException;
+use Lexik\Bundle\JWTAuthenticationBundle\Encoder\JWTEncoderInterface;
 use Lexik\Bundle\JWTAuthenticationBundle\Exception\JWTDecodeFailureException;
 use Lexik\Bundle\JWTAuthenticationBundle\Services\JWTTokenManagerInterface;
 use Symfony\Component\DependencyInjection\ParameterBag\ParameterBagInterface;
@@ -25,15 +26,17 @@ class User_Core_Api extends Api
     private UserFactory $userFactory;
     private UserRepository $userRepository;
     private JWTTokenManagerInterface $tokenManager;
+    private JWTEncoderInterface $tokenEncoder;
     private UserPasswordHasherInterface $passwordHasher;
 
     public function __construct(
-        EntityManagerInterface   $em,
-        ParameterBagInterface    $param,
-        Auth                     $auth,
-        UserFactory              $userFactory,
-        UserRepository           $userRepository,
-        JWTTokenManagerInterface $tokenManager,
+        EntityManagerInterface      $em,
+        ParameterBagInterface       $param,
+        Auth                        $auth,
+        UserFactory                 $userFactory,
+        UserRepository              $userRepository,
+        JWTTokenManagerInterface    $tokenManager,
+        JWTEncoderInterface         $tokenEncoder,
         UserPasswordHasherInterface $passwordHasher,
     )
     {
@@ -43,6 +46,7 @@ class User_Core_Api extends Api
         $this->userRepository = $userRepository;
         $this->tokenManager = $tokenManager;
         $this->passwordHasher = $passwordHasher;
+        $this->tokenEncoder = $tokenEncoder;
     }
 
     public function login(Request $request): JsonResponse
@@ -87,19 +91,13 @@ class User_Core_Api extends Api
                 if (array_key_exists('exp', $tokenData)) {
                     $expirationTime = $tokenData['exp'];
                 }
-                /*
-                 * data: [
-                        'token' => $token,
-                        'expiration_time' => $expirationTime
-                    ],
-                 */
 
                 return $this->successResponse([
                     "token" => $token,
                     "token_exp" => $expirationTime,
                     "token_data" => $tokenData
                 ]);
-            } catch (JWTDecodeFailureException $e) {
+            } catch (Exception $e) {
                 throw new AuthenticationException(
                     message: 'Token expired!'
                 );
@@ -165,6 +163,22 @@ class User_Core_Api extends Api
             return $this->successResponse();
         } catch (Exception|Throwable $e) {
             return $this->internalErrorResponse($e->getMessage());
+        }
+    }
+
+    public function tokenTest(Request $request): JsonResponse
+    {
+        $token = $request->headers->get("Authorization");
+
+        try {
+            $tokenData = $this->tokenEncoder->decode($token);
+
+            return $this->successResponse($tokenData);
+        } catch (JWTDecodeFailureException $e) {
+            return $this->errorResponse(
+                "token_invalid",
+                "The presented token is invalid."
+            );
         }
     }
 

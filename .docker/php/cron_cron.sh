@@ -1,0 +1,1 @@
+wp --path=/code/ cron event run --due-now >/proc/self/fd/2 2>&1
