@@ -3,13 +3,3 @@ controllers:
         path: ../src/Controller/
         namespace: App\Controller
     type: attribute
-
-api_v1:
-    resource: '../config/routes/api/v1/'
-    prefix: /api/v1
-    type: directory
-
-main:
-    resource: '../config/routes/main/'
-    prefix: /
-    type: directory

@@ -20,6 +20,6 @@ services:
             - '../src/Entity/'
             - '../src/Kernel.php'
 
-    jwt_authenticator:
-        class: App\Security\ApiAuthenticator
-        factory: [ 'JwtAuthenticatorStaticFactory', 'createJwtAuthenticator' ]
+    #jwt_authenticator:
+        #class: App\Security\ApiAuthenticator
+        #factory: [ 'JwtAuthenticatorStaticFactory', 'createJwtAuthenticator' ]

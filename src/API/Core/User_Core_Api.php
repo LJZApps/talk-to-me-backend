@@ -6,27 +6,16 @@ use App\API\Api;
 use App\Factory\UserFactory;
 use App\Repository\UserRepository;
 use Doctrine\ORM\EntityManagerInterface;
-use Exception;
-use Kreait\Firebase\Auth\SendActionLink\FailedToSendActionLink;
 use Kreait\Firebase\Contract\Auth;
-use Kreait\Firebase\Exception\AuthException;
-use Kreait\Firebase\Exception\FirebaseException;
-use Lexik\Bundle\JWTAuthenticationBundle\Encoder\JWTEncoderInterface;
-use Lexik\Bundle\JWTAuthenticationBundle\Exception\JWTDecodeFailureException;
-use Lexik\Bundle\JWTAuthenticationBundle\Services\JWTTokenManagerInterface;
 use Symfony\Component\DependencyInjection\ParameterBag\ParameterBagInterface;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface;
-use Symfony\Component\Security\Core\Exception\AuthenticationException;
-use Throwable;
 
 class User_Core_Api extends Api
 {
     private UserFactory $userFactory;
     private UserRepository $userRepository;
-    private JWTTokenManagerInterface $tokenManager;
-    private JWTEncoderInterface $tokenEncoder;
     private UserPasswordHasherInterface $passwordHasher;
 
     public function __construct(
@@ -35,8 +24,6 @@ class User_Core_Api extends Api
         Auth                        $auth,
         UserFactory                 $userFactory,
         UserRepository              $userRepository,
-        JWTTokenManagerInterface    $tokenManager,
-        JWTEncoderInterface         $tokenEncoder,
         UserPasswordHasherInterface $passwordHasher,
     )
     {
@@ -44,11 +31,18 @@ class User_Core_Api extends Api
 
         $this->userFactory = $userFactory;
         $this->userRepository = $userRepository;
-        $this->tokenManager = $tokenManager;
         $this->passwordHasher = $passwordHasher;
-        $this->tokenEncoder = $tokenEncoder;
     }
 
+    public function test(Request $request): JsonResponse
+    {
+        return $this->json([
+            "success" => true,
+            "message" => "Das ist eine Test-Nachricht."
+        ]);
+    }
+
+    /*
     public function login(Request $request): JsonResponse
     {
         try {
@@ -182,16 +176,6 @@ class User_Core_Api extends Api
         }
     }
 
-    // TODO
-    public function checkForEmail(Request $request): JsonResponse
-    {
-        try {
-            return $this->successResponse();
-        } catch (Exception|Throwable $e) {
-            return $this->internalErrorResponse();
-        }
-    }
-
     public function checkForUsername(Request $request): JsonResponse
     {
         try {
@@ -224,4 +208,5 @@ class User_Core_Api extends Api
             );
         }
     }
+    */
 }

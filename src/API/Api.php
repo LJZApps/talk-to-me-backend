@@ -40,7 +40,25 @@ class Api extends AbstractController
 
     protected function generateRandomString($length = 10)
     {
-        return substr(str_shuffle(str_repeat($x = '0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ', ceil($length / strlen($x)))), 1, $length);
+        return substr(str_shuffle(str_repeat($x = '0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ&!@%', ceil($length / strlen($x)))), 1, $length);
+    }
+
+    protected function generateSecret($length = 10)
+    {
+        $x = '0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ';
+        $special = '*&!@%^#$';
+
+        // Generate random string without the special characters
+        $randomString = substr(str_shuffle(str_repeat($x, ceil(($length - 1) / strlen($x)))), 1, $length - 1);
+
+        // Randomly choose one of the special characters
+        $randomSpecialChar = $special[rand(0, strlen($special) - 1)];
+
+        // Insert the special character at a random position in the string
+        $position = rand(0, strlen($randomString) - 1);
+        $randomString = substr_replace($randomString, $randomSpecialChar, $position, 0);
+
+        return $randomString;
     }
 
     public function successResponse(array $data = null): JsonResponse
