@@ -14,9 +14,9 @@ use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface;
 
 class Login_Core_Api extends Api
 {
-    public function __construct(EntityManagerInterface $em, ParameterBagInterface $param, Auth $firebaseAuth, UserRepository $userRepository, UserPasswordHasherInterface $passwordHasher)
+    public function __construct(EntityManagerInterface $em, ParameterBagInterface $param, UserRepository $userRepository, UserPasswordHasherInterface $passwordHasher)
     {
-        parent::__construct($em, $param, $firebaseAuth);
+        parent::__construct($em, $param);
 
         $this->userRepository = $userRepository;
         $this->passwordHasher = $passwordHasher;
@@ -123,8 +123,6 @@ class Login_Core_Api extends Api
         ];
         $refreshTokenSecret = $this->generateSecret(30);
         $refreshToken = Token::customPayload($refreshTokenPayload, $refreshTokenSecret);
-
-        Token::getPayload($refreshToken);
 
         return $this->json([
             "success" => true,
