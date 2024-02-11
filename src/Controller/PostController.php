@@ -38,11 +38,12 @@ class PostController extends AbstractController
 
             $result[] = [
                 "id" => $post->getId(),
-                "title" => $post->getTitle(),
                 "text" => $post->getText(),
+                "likes" => 0,
+                "comments" => [],
                 "created_by" => $userData,
                 "created_at" => $post->getCreatedAt()->getTimestamp(),
-                "updated_at" => $post->getUpdatedAt() ? $post->getUpdatedAt()->getTimestamp() : null
+                "updated_at" => $post->getUpdatedAt() ? $post->getUpdatedAt()->getTimestamp() : null,
             ];
         }
 

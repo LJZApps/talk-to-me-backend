@@ -5,43 +5,31 @@ namespace App\API\Core;
 use App\API\Api;
 use App\Entity\Post;
 use App\Entity\User;
+use App\Factory\PostFactory;
 use App\Repository\PostRepository;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\DependencyInjection\ParameterBag\ParameterBagInterface;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
-
+use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 
 class Posts_Core_Api extends Api
 {
-    public function __construct(EntityManagerInterface $em, ParameterBagInterface $param, PostRepository $postRepository)
+    public function __construct(EntityManagerInterface $em, ParameterBagInterface $param, PostRepository $postRepository, PostFactory $factory)
     {
         parent::__construct($em, $param);
 
         $this->postRepository = $postRepository;
         $this->em = $em;
+        $this->factory = $factory;
     }
 
-    public function getPosts(Request $request): array
+    public function createPost(Request $request): JsonResponse|NotFoundHttpException
     {
-        $posts = $this->postRepository->findAll();
-
-        return $posts;
-    }
-
-    public function createPost(Request $request): JsonResponse
-    {
-        $title = (string) $request->query->get("title", "");
-        $text = (string) $request->query->get("text", "");
-        $createdById = (int) $request->query->get("created_by", "");
-
-        $createdBy = $this->em->find(User::class, $createdById);
-
-        $post = new Post();
-        $post->setTitle($title);
-        $post->setText($text);
-        $post->setCreatedBy($createdBy);
-        $post->setCreatedAt(new \DateTimeImmutable());
+        $post = $this->factory->createOrUpdate($request);
+        if (is_null($post)) {
+            return $this->createNotFoundException();
+        }
 
         $this->em->persist($post);
         $this->em->flush();
