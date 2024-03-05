@@ -11,17 +11,20 @@ security:
                 property: email
         # used to reload user from session & other features (e.g. switch_user)
     firewalls:
-        main:
-            lazy: true
+        #main:
+            #lazy: true
+            #provider: app_user_provider
+
+        api:
+            pattern: ^/api/(v1)
             provider: app_user_provider
-            #custom_authenticators:
-            #    - App\Security\ApiAuthenticator
+            stateless: true
+            custom_authenticators:
+                - App\Security\ApiAuthenticator
 
-            # activate different ways to authenticate
-            # https://symfony.com/doc/current/security.html#the-firewall
-
-            # https://symfony.com/doc/current/security/impersonating_user.html
-            # switch_user: true
+        api_login:
+            pattern: ^/api/login
+            security: false
 
     # Easy way to control access for large sections of your site
     # Note: Only the *first* access control that matches will be used

@@ -14,49 +14,53 @@ class ResponseUtil
      * @param int $statusCode default 400 (optional)
      * @param bool $success default false (optional)
      */
-    public function errorResponse(string $error_code, string $error_message, array $extra_data = null, int $statusCode = 400, bool $success = false): JsonResponse
+    public function successResponse(array $data = null): JsonResponse
     {
-        if (isset($extra_data)) {
-            $response = new JsonResponse(
-                [
-                    'success' => $success,
-                    'error_code' => $error_code,
-                    'error_message' => $error_message,
-                    'extra_data' => $extra_data,
-                ]
-            );
-        } else {
-            $response = new JsonResponse(
-                [
-                    'success' => $success,
-                    'error_code' => $error_code,
-                    'error_message' => $error_message,
-                ]
-            );
+        if (!is_null($data)) {
+            return new JsonResponse([
+                "success" => true,
+                "data" => $data
+            ]);
         }
 
-        $response->setStatusCode($statusCode);
-
-        return $response;
+        return new JsonResponse([
+            "success" => true
+        ]);
     }
 
-    public function arrayErrorResponse(string $error_code, string $error_message, array $more_context = null, int $statusCode = 400, bool $success = false): array
+    public function errorResponse(string $error_code, string $error_message, string $exception_message = null, int $status = 400): JsonResponse
     {
-        if (isset($more_context)) {
-            $response = array(
-                'success' => $success,
-                'error_code' => $error_code,
-                'error_message' => $error_message,
-                'more_context' => $more_context,
-            );
-        } else {
-            $response = array(
-                'success' => $success,
-                'error_code' => $error_code,
-                'error_message' => $error_message,
-            );
+        if (!is_null($exception_message)) {
+            return new JsonResponse([
+                "success" => false,
+                "error_code" => $error_code,
+                "error_message" => $error_message,
+                "exception_message" => $exception_message
+            ], $status);
         }
 
-        return $response;
+        return new JsonResponse([
+            "success" => false,
+            "error_code" => $error_code,
+            "error_message" => $error_message
+        ], $status);
+    }
+
+    public function internalErrorResponse(string $exception_message = null): JsonResponse
+    {
+        if (!is_null($exception_message)) {
+            return new JsonResponse([
+                "success" => false,
+                "error_code" => "internal_error",
+                "error_message" => "Something went wrong on our end.",
+                "exception_message" => $exception_message
+            ], 500);
+        }
+
+        return new JsonResponse([
+            "success" => false,
+            "error_code" => "internal_error",
+            "error_message" => "Something went wrong on our end."
+        ], 500);
     }
 }

@@ -14,19 +14,19 @@ class SecurityController extends AbstractController
         $this->api = $api;
     }
 
-    #[Route(path: '/api/v1/login', name: 'api_login', methods: ['POST'])]
+    #[Route(path: '/api/login', name: 'api_login', methods: ['POST'])]
     public function apiLogin(Request $request)
     {
         return $this->api->login($request);
     }
 
-    #[Route(path: '/api/v1/register', name: 'api_register')]
+    #[Route(path: '/api/register', name: 'api_register')]
     public function apiRegister(Request $request)
     {
         return $this->api->register($request);
     }
 
-    #[Route(path: '/api/v1/validate-email', name: 'api_email_validation')]
+    #[Route(path: '/api/validate-email', name: 'api_email_validation')]
     public function apiValidateEmail(Request $request)
     {
         return $this->api->validateEmail($request);

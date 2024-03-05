@@ -21,13 +21,11 @@ class PostFactory implements EntityFactoryInterface
             $entity = new Post();
         }
 
-        $title = (string) $request->query->get("title", "");
         $text = (string) $request->query->get("text", "");
         $createdById = (int) $request->query->get("created_by", "");
 
         $createdBy = $this->entityManager->find(User::class, $createdById);
 
-        $entity->setTitle($title);
         $entity->setText($text);
         $entity->setCreatedBy($createdBy);
 

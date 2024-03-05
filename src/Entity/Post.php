@@ -38,18 +38,6 @@ class Post
         return $this->id;
     }
 
-    public function getTitle(): ?string
-    {
-        return $this->title;
-    }
-
-    public function setTitle(string $title): static
-    {
-        $this->title = $title;
-
-        return $this;
-    }
-
     public function getCreatedBy(): ?User
     {
         return $this->created_by;

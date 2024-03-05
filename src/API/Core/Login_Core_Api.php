@@ -5,7 +5,6 @@ namespace App\API\Core;
 use App\API\Api;
 use App\Repository\UserRepository;
 use Doctrine\ORM\EntityManagerInterface;
-use Kreait\Firebase\Contract\Auth;
 use ReallySimpleJWT\Token;
 use Symfony\Component\DependencyInjection\ParameterBag\ParameterBagInterface;
 use Symfony\Component\HttpFoundation\JsonResponse;
@@ -33,8 +32,9 @@ class Login_Core_Api extends Api
 
         if (!filter_var($email, FILTER_VALIDATE_EMAIL)) {
             return $this->errorResponse(
-                "invalid_email",
-                "The provided email is invalid."
+                error_code: "invalid_email",
+                error_message: "The provided email is invalid.",
+                status: 401
             );
         }
 
@@ -73,21 +73,24 @@ class Login_Core_Api extends Api
         if (strlen(trim($credentials["email"])) == 0) {
             return $this->errorResponse(
                 error_code: "empty_email",
-                error_message: "Please enter a email."
+                error_message: "Please enter a email.",
+                status: 401
             );
         }
 
         if (strlen(trim($credentials["password"])) == 0) {
             return $this->errorResponse(
                 error_code: "empty_password",
-                error_message: "Please enter a password."
+                error_message: "Please enter a password.",
+                status: 401
             );
         }
 
         if (!filter_var($credentials["email"], FILTER_VALIDATE_EMAIL)) {
             return $this->errorResponse(
                 "invalid_email",
-                "The provided email is invalid."
+                "The provided email is invalid.",
+                status: 401
             );
         }
 
@@ -95,14 +98,16 @@ class Login_Core_Api extends Api
         if (is_null($user)) {
             return $this->errorResponse(
                 error_code: "user_not_found",
-                error_message: "A user with this email does not exist."
+                error_message: "A user with this email does not exist.",
+                status: 401
             );
         }
 
         if (!$this->passwordHasher->isPasswordValid($user, $credentials["password"])) {
             return $this->errorResponse(
                 error_code: "invalid_password",
-                error_message: "The provided password is invalid."
+                error_message: "The provided password is invalid.",
+                status: 401
             );
         }
 
@@ -123,6 +128,11 @@ class Login_Core_Api extends Api
         ];
         $refreshTokenSecret = $this->generateSecret(30);
         $refreshToken = Token::customPayload($refreshTokenPayload, $refreshTokenSecret);
+
+        $parsedToken = Token::parser($accessToken);
+        $parsedToken->parse()->getPayload();
+
+        //Token::validateExpiration();
 
         return $this->json([
             "success" => true,

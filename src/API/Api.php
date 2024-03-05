@@ -67,7 +67,7 @@ class Api extends AbstractController
         ]);
     }
 
-    public function errorResponse(string $error_code, string $error_message, string $exception_message = null): JsonResponse
+    public function errorResponse(string $error_code, string $error_message, string $exception_message = null, int $status = 400): JsonResponse
     {
         if (!is_null($exception_message)) {
             return $this->json([
@@ -75,14 +75,14 @@ class Api extends AbstractController
                 "error_code" => $error_code,
                 "error_message" => $error_message,
                 "exception_message" => $exception_message
-            ], 400);
+            ], $status);
         }
 
         return $this->json([
             "success" => false,
             "error_code" => $error_code,
             "error_message" => $error_message
-        ], 400);
+        ], $status);
     }
 
     public function internalErrorResponse(string $exception_message = null): JsonResponse
