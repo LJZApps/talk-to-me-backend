@@ -53,7 +53,7 @@ ADD docker-entrypoint.sh /usr/local/sbin/docker-entrypoint.sh
 RUN phive install --copy --target /usr/bin --trust-gpg-keys CBB3D576F2A0946F composer
 RUN phive install --copy --target /usr/bin --trust-gpg-keys 51C67305FFC2E5C0 phpstan
 RUN phive install --copy --target /usr/bin --trust-gpg-keys 12CE0F1D262429A5 psalm
-RUN phive install --copy --target /usr/bin --trust-gpg-keys 31C7E470E2138192 phpcs
+RUN echo -e "y\n" | phive install --copy --target /usr/bin --trust-gpg-keys 31C7E470E2138192 phpcs
 RUN phive install --copy --target /usr/bin --trust-gpg-keys 31C7E470E2138192 phpcbf
 RUN phive install --copy --target /usr/bin --trust-gpg-keys E82B2FB314E9906E php-cs-fixer
 RUN phive install --copy --target /usr/bin --trust-gpg-keys 4AA394086372C20A phpunit@^9.0.0

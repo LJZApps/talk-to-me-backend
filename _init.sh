@@ -1,5 +1,5 @@
 echo "CURRENT_UID: ${CURRENT_UID}"
-pushd $(dirname $0)
+pushd "$(dirname $0)"
 
 if [ -z $CURRENT_UID ]
     then
