@@ -107,10 +107,10 @@ class Login_Core_Api extends Api
         $accessTokenPayload = [
             'iat' => time(),
             'uid' => $user->getId(),
-            'exp' => time() + (60*60*24*7),
+            'exp' => time() + (60*60*24*7)
         ];
-        $accessTokenSecret = $this->generateSecret(30);
-        $accessToken = Token::customPayload($accessTokenPayload, $accessTokenSecret);
+        $tokenSecret = $this->getParameter('jwt.secret');
+        $accessToken = Token::customPayload($accessTokenPayload, $tokenSecret);
 
         // Refresh token (invalidates after 3 months)
         $refreshTokenPayload = [
@@ -118,8 +118,7 @@ class Login_Core_Api extends Api
             'uid' => $user->getId(),
             'exp' => time() + (90*24*60*60),
         ];
-        $refreshTokenSecret = $this->generateSecret(30);
-        $refreshToken = Token::customPayload($refreshTokenPayload, $refreshTokenSecret);
+        $refreshToken = Token::customPayload($refreshTokenPayload, $tokenSecret);
 
         $parsedToken = Token::parser($accessToken);
         $parsedToken->parse()->getPayload();
@@ -130,12 +129,10 @@ class Login_Core_Api extends Api
             "success" => true,
             "access_token" => [
                 "token" => $accessToken,
-                "secret" => $accessTokenSecret,
                 "exp" => $accessTokenPayload["exp"]
             ],
             "refresh_token" => [
                 "token" => $refreshToken,
-                "secret" => $refreshTokenSecret,
                 "exp" => $refreshTokenPayload["exp"]
             ]
         ]);

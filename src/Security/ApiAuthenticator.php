@@ -3,9 +3,8 @@
 namespace App\Security;
 
 use App\Repository\UserRepository;
-use Lexik\Bundle\JWTAuthenticationBundle\Exception\JWTDecodeFailureException;
-use Lexik\Bundle\JWTAuthenticationBundle\Services\JWTTokenManagerInterface;
 use ReallySimpleJWT\Token;
+use Symfony\Component\DependencyInjection\ParameterBag\ParameterBagInterface;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -13,108 +12,70 @@ use Symfony\Component\Security\Core\Authentication\Token\TokenInterface;
 use Symfony\Component\Security\Core\Exception\AuthenticationException;
 use Symfony\Component\Security\Http\Authenticator\AbstractAuthenticator;
 use Symfony\Component\Security\Http\Authenticator\Passport\Badge\UserBadge;
-use Symfony\Component\Security\Http\Authenticator\Passport\Credentials\PasswordCredentials;
+use Symfony\Component\Security\Http\Authenticator\Passport\Credentials\CustomCredentials;
 use Symfony\Component\Security\Http\Authenticator\Passport\Passport;
+use Symfony\Component\Security\Http\Authenticator\Passport\SelfValidatingPassport;
+use function PHPUnit\Framework\throwException;
 
 class ApiAuthenticator extends AbstractAuthenticator
 {
-    public function __construct(
-        private readonly UserRepository $userRepository
-    ) {}
+    private $userRepository;
+
+    public function __construct(UserRepository $userRepository, ParameterBagInterface $parameterBag)
+    {
+        $this->userRepository = $userRepository;
+        $this->params = $parameterBag;
+    }
 
     public function supports(Request $request): ?bool
     {
-        if(!is_null($request->headers->get('Authorization'))) {
-            return str_starts_with($request->headers->get('Authorization', ''), 'Bearer ');
-        }
-        return true;
+        return $request->headers->has('Authorization');
     }
 
-    /**
-     * @inheritDoc
-     */
     public function authenticate(Request $request): Passport
     {
-        if ($request->headers->has("Authorization")) {
-            $token = $request->headers->get('Authorization');
-            $bearerToken = null;
+        $authorizationHeader = $request->headers->get('Authorization');
+        list($bearer, $jwt) = explode(" ", $authorizationHeader);
 
-            // Den Bearer-Token aus dem Header extrahieren
-            if (preg_match('/Bearer\s+(.*)/', $token, $matches)) {
-                $bearerToken = $matches[1];
-            }
+        $secret = $this->params->get('jwt.secret');
 
-            try {
-                //$isExpired = Token::validateExpiration($token);
-
-                throw new AuthenticationException(
-                    message: $bearerToken
-                );
-
-                if ($isExpired) {
-                    throw new AuthenticationException(
-                        message: 'Token expired!'
-                    );
-                }
-
-                $userId = null;
-
-                $tokenData = Token::getPayload($bearerToken);
-
-                if (array_key_exists("user_id", $tokenData)) {
-                    $userId = $tokenData['user_id'];
-                }
-
-                /*
-                if ($userId != null) {
-                    return new Passport(
-                        userBadge: new UserBadge(
-                            userIdentifier: (string) $userId,
-                            userLoader: function (string $userIdentifier) {
-                                return $this->userRepository->findByID((int) $userIdentifier);
-                            }
-                        ),
-                        credentials: new PasswordCredentials($token)
-                    );
-                } else {
-                    throw new AuthenticationException(
-                        message: 'Invalid token!'
-                    );
-                }
-                */
-            } catch (JWTDecodeFailureException $e) {
-                throw new AuthenticationException(
-                    message: 'Invalid token!'
-                );
-            }
+        $valid = Token::validate($jwt, $secret);
+        if (!$valid) {
+            throw new AuthenticationException('Invalid token');
         }
 
-        throw new AuthenticationException(
-            message: 'No token!'
+        $validateExpiration = Token::validateExpiration($jwt);
+        if (!$validateExpiration) {
+            throw new AuthenticationException('Token expired');
+        }
+
+        $parsedJwt = Token::parser($jwt); // Set your JWT Secret when validating and parsing
+        $payload = $parsedJwt->parse()->getPayload();
+        $userId = $payload['uid'];
+
+        return new SelfValidatingPassport(
+            new UserBadge($userId,
+                function ($userIdentifier) {
+                    return $this->userRepository->find($userIdentifier);
+                }
+            )
         );
     }
 
-    /**
-     * @inheritDoc
-     */
     public function onAuthenticationSuccess(Request $request, TokenInterface $token, string $firewallName): ?Response
     {
-        return new JsonResponse([
-            "success" => false,
-            "message" => "token valid"
-        ]);
-        // return null;
+        // no need to return a Response if authenticate() method passes
+        return null;
     }
 
-    /**
-     * @inheritDoc
-     */
     public function onAuthenticationFailure(Request $request, AuthenticationException $exception): ?Response
     {
-        return new JsonResponse([
-            "success" => false,
-            "error_code" => "auth_error",
-            "error_messge" => $exception->getMessage()
-        ]);
+        return new JsonResponse(
+            [
+                'success' => false,
+                'message' => $exception->getMessage()
+            ],
+            Response::HTTP_UNAUTHORIZED
+        );
     }
 }
