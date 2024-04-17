@@ -17,6 +17,11 @@
                         <div class="mb-4 img-fluid text-center">
                             <a href="{{ path('home') }}"><img src="project-images/login/icon-192-maskable.png" class="mb-2 text-inverse" alt="Image"></a>
                             <p class="mb-6 text-start">Please log in to use the backend.</p>
+                            {% apply markdown_to_html %}
+                                Title
+                                =====
+                                Hello!
+                            {% endapply %}
                         </div>
                         <!-- Form -->
                         <form>

@@ -12,6 +12,7 @@
         "doctrine/doctrine-migrations-bundle": "^3.2",
         "doctrine/orm": "^2.15",
         "kreait/firebase-bundle": "^5.0",
+        "league/commonmark": "^2.4",
         "lexik/jwt-authentication-bundle": "^2.19",
         "php-ai/php-ml": "^0.10.0",
         "phpdocumentor/reflection-docblock": "^5.3",
@@ -48,6 +49,7 @@
         "symfony/yaml": "6.3.*",
         "twig/extra-bundle": "^2.12|^3.0",
         "twig/intl-extra": "^3.6",
+        "twig/markdown-extra": "^3.9",
         "twig/twig": "^3.6"
     },
     "config": {

@@ -7,14 +7,6 @@ use App\Entity\Post;
 use App\Repository\PostRepository;
 use App\Utils\ResponseUtil;
 use Doctrine\ORM\EntityManagerInterface;
-use Phpml\Association\Apriori;
-use Phpml\Classification\NaiveBayes;
-use Phpml\Classification\SVC;
-use Phpml\FeatureExtraction\TfIdfTransformer;
-use Phpml\FeatureExtraction\TokenCountVectorizer;
-use Phpml\SupportVectorMachine\Kernel;
-use Phpml\Tokenization\WhitespaceTokenizer;
-use Phpml\Tokenization\WordTokenizer;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
@@ -106,5 +98,15 @@ class PostController extends AbstractController
     public function apiCreatePost(Request $request): JsonResponse
     {
         return $this->api->createPost($request);
+    }
+
+    #[Route('/api/customers', name: 'api_get_customers', methods: ['GET'])]
+    public function getCustomers(Request $request): JsonResponse
+    {
+        return $this->json([
+            'count' => 81,
+            'goal' => 105,
+            'latest_customer_name' => "Delta Plauen"
+        ]);
     }
 }

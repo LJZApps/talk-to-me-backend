@@ -41,14 +41,6 @@ class Login_Core_Api extends Api
         $user = $this->userRepository->findUserByEmail($email);
         if ($user != null) {
             // TODO check banned, locked and deactivated status
-            /*
-            if ($user->isBanned()) {
-                return $this->json([
-                    "success" => true,
-                    "user_status" => "banned"
-                ]);
-            }
-            */
 
             // User already exists, redirect to login page
             return $this->json([
