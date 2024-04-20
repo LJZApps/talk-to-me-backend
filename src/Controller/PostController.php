@@ -44,6 +44,7 @@ class PostController extends AbstractController
         ];
 
         $result = [
+            "my_id" => $this->getUser()->getId(),
             "id" => $post->getId(),
             "text" => $post->getText(),
             "likes" => 0,
@@ -84,7 +85,7 @@ class PostController extends AbstractController
                 "id" => $post->getId(),
                 "text" => $post->getText(),
                 "likes" => 0,
-                "comments" => [],
+                "comments" => $post->getComments(),
                 "created_by" => $userData,
                 "created_at" => $post->getCreatedAt()->getTimestamp(),
                 "updated_at" => $post->getUpdatedAt() ? $post->getUpdatedAt()->getTimestamp() : null,

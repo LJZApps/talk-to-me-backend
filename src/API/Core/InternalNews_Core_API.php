@@ -23,7 +23,6 @@ class InternalNews_Core_API extends Api
     public function getNews(Request $request): JsonResponse
     {
         $news = $this->internalNewsRepository->findAll();
-        $slug = $this->util->slugify("Deine Mutter ist eine Hure");
 
         $result = [];
 
