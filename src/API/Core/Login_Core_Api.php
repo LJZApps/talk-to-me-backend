@@ -58,11 +58,11 @@ class Login_Core_Api extends Api
 
     public function login(Request $request): JsonResponse {
         $credentials = [
-            "email" => (string) $request->query->get("email", ""),
+            "username" => (string) $request->query->get("username", ""),
             "password" => (string) $request->query->get("password", "")
         ];
 
-        if (strlen(trim($credentials["email"])) == 0) {
+        if (strlen(trim($credentials["username"])) == 0) {
             return $this->errorResponse(
                 error_code: "empty_email",
                 error_message: "Please enter a email.",
@@ -78,7 +78,7 @@ class Login_Core_Api extends Api
             );
         }
 
-        if (!filter_var($credentials["email"], FILTER_VALIDATE_EMAIL)) {
+        if (!filter_var($credentials["username"], FILTER_VALIDATE_EMAIL)) {
             return $this->errorResponse(
                 "invalid_email",
                 "The provided email is invalid.",
@@ -86,7 +86,7 @@ class Login_Core_Api extends Api
             );
         }
 
-        $user = $this->userRepository->findUserByEmail($credentials["email"]);
+        $user = $this->userRepository->findUserByEmail($credentials["username"]);
         if (is_null($user)) {
             return $this->errorResponse(
                 error_code: "user_not_found",
